@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { products, getFeaturedProducts } from "@/data/products";
@@ -14,7 +13,6 @@ const Index = () => {
   const slideTimerRef = useRef<number | null>(null);
   const totalSlides = products.filter(p => p.category === "pokemon").length;
 
-  // Auto transition slides
   useEffect(() => {
     const startSlideTimer = () => {
       slideTimerRef.current = window.setTimeout(() => {
@@ -32,7 +30,6 @@ const Index = () => {
     };
   }, [currentSlide, totalSlides]);
 
-  // Handle transition end
   useEffect(() => {
     if (isTransitioning) {
       const timer = setTimeout(() => {
@@ -70,9 +67,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
       <section className="h-screen flex flex-col md:flex-row">
-        {/* Left Half - Brand */}
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-16 bg-white relative overflow-hidden">
           <div className="absolute inset-0 bg-noise opacity-5"></div>
           <div className="max-w-md mx-auto text-center md:text-left w-full slide-up delay-1">
@@ -99,7 +94,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Right Half - Slideshow */}
         <div className="w-full md:w-1/2 bg-gray-100 relative overflow-hidden">
           <div className="absolute inset-0">
             {pokemonCards.map((card, index) => (
@@ -113,13 +107,13 @@ const Index = () => {
                 <img
                   src={card.image}
                   alt={card.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain bg-white"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-8 text-white">
                   <div className="max-w-lg slide-up">
                     <h3 className="text-3xl font-bold mb-2">{card.name}</h3>
                     <p className="text-white/80 mb-4">{card.rarity}</p>
-                    <p className="text-2xl font-bold mb-4">${card.price.toFixed(2)}</p>
+                    <p className="text-2xl font-bold mb-4">Rs {card.price.toLocaleString()}</p>
                     <Button 
                       className="bg-white text-primary hover:bg-white/90 button-effect"
                       asChild
@@ -132,7 +126,6 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Navigation Controls */}
           <div className="absolute bottom-8 right-8 flex items-center space-x-3 z-10">
             <button
               onClick={prevSlide}
@@ -150,7 +143,6 @@ const Index = () => {
             </button>
           </div>
 
-          {/* Pagination Indicators */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2">
             {Array.from({ length: totalSlides }).map((_, index) => (
               <button
@@ -169,7 +161,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Cards Section */}
       <section className="py-16 px-4 bg-gray-50">
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -196,7 +187,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Collections Section */}
       <section className="py-16 bg-white">
         <div className="container">
           <div className="text-center mb-12">
@@ -257,7 +247,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-16 bg-primary text-white">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Join Our Community</h2>
