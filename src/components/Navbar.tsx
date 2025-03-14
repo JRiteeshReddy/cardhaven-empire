@@ -2,26 +2,22 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-import { ShoppingCart } from "lucide-react";
-import { cn } from "@/lib/utils";
+import CartDrawer from "./CartDrawer";
+import { Menu, X, ShoppingCart, ChevronDown } from "lucide-react";
 
 const Navbar = () => {
-  const { totalItems, openCart } = useCart();
-  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const { totalItems, openCart } = useCart();
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Shop", path: "/shop" },
-    { name: "About", path: "/about" },
-    { name: "Join & Contact", path: "/join-contact" },
-  ];
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      const offset = window.scrollY;
-      if (offset > 50) {
+      if (window.scrollY > 20) {
         setScrolled(true);
       } else {
         setScrolled(false);
@@ -29,111 +25,214 @@ const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    setMobileMenuOpen(false);
+    setIsOpen(false);
   }, [location.pathname]);
 
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
-        scrolled
-          ? "py-3 backdrop-blur-md bg-white/80 shadow-sm"
-          : "py-5 bg-transparent"
-      )}
-    >
-      <div className="container flex items-center justify-between">
-        <Link 
-          to="/" 
-          className="text-xl font-semibold transition-all hover:opacity-80"
-        >
-          <span className="text-primary">Cards</span>
-          <span className="font-bold">ForYou</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={cn(
-                "text-sm font-medium transition-all hover:text-primary fancy-link",
-                location.pathname === link.path && "text-primary after:w-full"
-              )}
-            >
-              {link.name}
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          scrolled ? "bg-white shadow-md py-2" : "bg-white/80 backdrop-blur-md py-4"
+        }`}
+      >
+        <div className="container px-4 mx-auto">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <Link to="/" className="text-2xl font-bold text-primary">
+              CardKing
             </Link>
-          ))}
-        </nav>
 
-        {/* Mobile Navigation Button */}
-        <button
-          className="md:hidden flex flex-col space-y-1.5 p-2 z-50"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span 
-            className={cn(
-              "block w-6 h-0.5 bg-current transition-transform duration-300",
-              mobileMenuOpen && "translate-y-2 rotate-45"
-            )} 
-          />
-          <span 
-            className={cn(
-              "block w-6 h-0.5 bg-current transition-opacity duration-300",
-              mobileMenuOpen && "opacity-0"
-            )} 
-          />
-          <span 
-            className={cn(
-              "block w-6 h-0.5 bg-current transition-transform duration-300",
-              mobileMenuOpen && "-translate-y-2 -rotate-45"
-            )} 
-          />
-        </button>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              <Link
+                to="/"
+                className={`transition-colors hover:text-primary ${
+                  isActive("/") ? "text-primary font-semibold" : "text-gray-700"
+                }`}
+              >
+                Home
+              </Link>
+              <Link
+                to="/shop"
+                className={`transition-colors hover:text-primary ${
+                  isActive("/shop") ? "text-primary font-semibold" : "text-gray-700"
+                }`}
+              >
+                Shop
+              </Link>
+              
+              <div className="group relative">
+                <button className="flex items-center text-gray-700 hover:text-primary">
+                  Categories <ChevronDown className="h-4 w-4 ml-1" />
+                </button>
+                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    <Link
+                      to="/shop?category=pokemon"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      Pokémon
+                    </Link>
+                    <Link
+                      to="/shop?category=onepiece"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      One Piece
+                    </Link>
+                    <Link
+                      to="/shop?category=yugioh"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      Yu-Gi-Oh!
+                    </Link>
+                    <Link
+                      to="/shop?category=mysterybox"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      role="menuitem"
+                    >
+                      Mystery Box
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              
+              <Link
+                to="/sign-in"
+                className={`transition-colors hover:text-primary ${
+                  isActive("/sign-in") ? "text-primary font-semibold" : "text-gray-700"
+                }`}
+              >
+                Sign In
+              </Link>
+              
+              <button
+                onClick={openCart}
+                className="relative p-2 text-gray-700 hover:text-primary transition-colors"
+                aria-label="Open cart"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                {totalItems > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-primary rounded-full">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+            </div>
 
-        {/* Mobile Navigation Menu */}
-        <div 
-          className={cn(
-            "fixed inset-0 bg-white z-40 flex flex-col items-center justify-center gap-8 transition-all duration-300 ease-in-out md:hidden",
-            mobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          )}
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={cn(
-                "text-xl font-medium py-2 transition-all hover:text-primary",
-                location.pathname === link.path && "text-primary"
-              )}
-            >
-              {link.name}
-            </Link>
-          ))}
+            {/* Mobile menu button */}
+            <div className="flex items-center md:hidden">
+              <button
+                onClick={openCart}
+                className="relative p-2 mr-2 text-gray-700 hover:text-primary transition-colors"
+                aria-label="Open cart"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                {totalItems > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-primary rounded-full">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+              
+              <button
+                onClick={toggleMenu}
+                className="p-2 rounded-md text-gray-700 focus:outline-none"
+              >
+                {isOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Cart Icon */}
-        <button
-          onClick={openCart}
-          className="relative p-2 button-effect text-primary rounded-full hover:bg-primary/5"
-          aria-label="Open cart"
+        {/* Mobile menu */}
+        <div
+          className={`md:hidden ${
+            isOpen ? "block" : "hidden"
+          } transition-all duration-300 ease-in-out`}
         >
-          <ShoppingCart className="h-6 w-6" />
-          {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-[10px] font-semibold text-white bg-primary rounded-full animate-scale-in">
-              {totalItems}
-            </span>
-          )}
-        </button>
-      </div>
-    </header>
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-white shadow-lg">
+            <Link
+              to="/"
+              className={`block px-3 py-2 rounded-md ${
+                isActive("/")
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/shop"
+              className={`block px-3 py-2 rounded-md ${
+                isActive("/shop")
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              Shop
+            </Link>
+            <div>
+              <div className="px-3 py-2 font-medium text-gray-700">
+                Categories
+              </div>
+              <div className="pl-6 space-y-1">
+                <Link
+                  to="/shop?category=pokemon"
+                  className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+                >
+                  Pokémon
+                </Link>
+                <Link
+                  to="/shop?category=onepiece"
+                  className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+                >
+                  One Piece
+                </Link>
+                <Link
+                  to="/shop?category=yugioh"
+                  className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+                >
+                  Yu-Gi-Oh!
+                </Link>
+                <Link
+                  to="/shop?category=mysterybox"
+                  className="block px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+                >
+                  Mystery Box
+                </Link>
+              </div>
+            </div>
+            <Link
+              to="/sign-in"
+              className={`block px-3 py-2 rounded-md ${
+                isActive("/sign-in")
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </nav>
+      
+      <CartDrawer />
+    </>
   );
 };
 
