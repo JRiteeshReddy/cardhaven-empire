@@ -55,7 +55,7 @@ const ProductView = () => {
                 src={product.image}
                 alt={product.name}
                 className={cn(
-                  "w-full h-full object-cover transition-all duration-1000",
+                  "w-full h-full object-contain transition-all duration-1000",
                   imageLoaded ? "img-loaded" : "img-loading"
                 )}
                 onLoad={handleImageLoad}
@@ -71,7 +71,7 @@ const ProductView = () => {
               
               <div className="absolute top-4 left-4">
                 <span className="inline-block px-3 py-1 text-sm font-medium bg-white/80 backdrop-blur-sm rounded-full">
-                  {product.rarity}
+                  {product.rarity || product.category}
                 </span>
               </div>
             </div>
@@ -84,7 +84,7 @@ const ProductView = () => {
                   {product.category.charAt(0).toUpperCase() + product.category.slice(1)} • 
                   {product.releaseDate && ` Released: ${new Date(product.releaseDate).toLocaleDateString()}`}
                 </p>
-                <p className="text-3xl font-bold mb-6">${product.price.toFixed(2)}</p>
+                <p className="text-3xl font-bold mb-6">Rs {product.price}</p>
 
                 <div className="mb-8">
                   <h3 className="text-sm font-semibold uppercase tracking-wider mb-2">

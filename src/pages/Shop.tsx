@@ -22,6 +22,7 @@ const Shop = () => {
     { id: "pokemon", name: "Pokémon" },
     { id: "onepiece", name: "One Piece" },
     { id: "yugioh", name: "Yu-Gi-Oh!" },
+    { id: "mysterybox", name: "Mystery Box" }
   ];
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const Shop = () => {
     const timer = setTimeout(() => {
       if (activeCategory) {
         setDisplayedProducts(
-          getProductsByCategory(activeCategory as "pokemon" | "onepiece" | "yugioh")
+          getProductsByCategory(activeCategory as "pokemon" | "onepiece" | "yugioh" | "mysterybox")
         );
       } else {
         setDisplayedProducts(products);

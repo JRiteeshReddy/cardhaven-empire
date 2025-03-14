@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <div className="absolute top-3 left-3">
             <span className="inline-block px-2 py-1 text-xs font-medium bg-white/80 backdrop-blur-sm rounded-full">
-              {product.rarity}
+              {product.rarity || product.category}
             </span>
           </div>
         </div>
@@ -56,7 +56,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.category}
           </span>
           <h3 className="text-lg font-medium mb-2 line-clamp-1">{product.name}</h3>
-          <p className="text-2xl font-bold mb-4">${product.price.toFixed(2)}</p>
+          <p className="text-2xl font-bold mb-4">Rs {product.price}</p>
           
           <div className="mt-auto flex space-x-2">
             <Button 
