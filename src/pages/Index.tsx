@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { products, getFeaturedProducts } from "@/data/products";
@@ -85,7 +86,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button size="lg" className="button-effect" asChild>
-                <Link to="/shop">Shop Now</Link>
+                <Link to="/shop" target="_blank">Shop Now</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-2" asChild>
                 <Link to="/about">Learn More</Link>
@@ -94,32 +95,34 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="w-full md:w-1/2 bg-gray-100 relative overflow-hidden">
-          <div className="absolute inset-0">
+        <div className="w-full md:w-1/2 bg-white relative overflow-hidden">
+          <div className="absolute inset-0 flex items-center justify-center">
             {pokemonCards.map((card, index) => (
               <div
                 key={card.id}
                 className={cn(
-                  "absolute inset-0 transition-opacity duration-700",
+                  "absolute inset-0 transition-opacity duration-700 flex items-center justify-center",
                   currentSlide === index ? "opacity-100" : "opacity-0"
                 )}
               >
-                <img
-                  src={card.image}
-                  alt={card.name}
-                  className="w-full h-full object-contain bg-white"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-8 text-white">
-                  <div className="max-w-lg slide-up">
-                    <h3 className="text-3xl font-bold mb-2">{card.name}</h3>
-                    <p className="text-white/80 mb-4">{card.rarity}</p>
-                    <p className="text-2xl font-bold mb-4">Rs {card.price.toLocaleString()}</p>
-                    <Button 
-                      className="bg-white text-primary hover:bg-white/90 button-effect"
-                      asChild
-                    >
-                      <Link to={`/product/${card.id}`}>View Card</Link>
-                    </Button>
+                <div className="max-w-[70%] max-h-[80%] relative">
+                  <img
+                    src={card.image}
+                    alt={card.name}
+                    className="w-full h-full object-contain bg-white shadow-md rounded-lg"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-8 text-white rounded-lg">
+                    <div className="max-w-lg slide-up">
+                      <h3 className="text-3xl font-bold mb-2">{card.name}</h3>
+                      <p className="text-white/80 mb-4">{card.rarity}</p>
+                      <p className="text-2xl font-bold mb-4">Rs {card.price.toLocaleString()}</p>
+                      <Button 
+                        className="bg-white text-primary hover:bg-white/90 button-effect"
+                        asChild
+                      >
+                        <Link to={`/product/${card.id}`}>View Card</Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -129,14 +132,14 @@ const Index = () => {
           <div className="absolute bottom-8 right-8 flex items-center space-x-3 z-10">
             <button
               onClick={prevSlide}
-              className="p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-colors"
+              className="p-3 rounded-full bg-black/20 backdrop-blur-sm text-black hover:bg-black/30 transition-colors"
               aria-label="Previous slide"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
             <button
               onClick={nextSlide}
-              className="p-3 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-colors"
+              className="p-3 rounded-full bg-black/20 backdrop-blur-sm text-black hover:bg-black/30 transition-colors"
               aria-label="Next slide"
             >
               <ArrowRight className="h-5 w-5" />
@@ -151,8 +154,8 @@ const Index = () => {
                 className={cn(
                   "w-2 h-2 rounded-full transition-all",
                   currentSlide === index
-                    ? "w-6 bg-white"
-                    : "bg-white/50 hover:bg-white/70"
+                    ? "w-6 bg-black"
+                    : "bg-black/50 hover:bg-black/70"
                 )}
                 aria-label={`Go to slide ${index + 1}`}
               />
