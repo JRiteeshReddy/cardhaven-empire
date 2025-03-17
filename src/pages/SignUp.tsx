@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ const formSchema = z.object({
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,16 +41,44 @@ const SignUp = () => {
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // In a real app, this would connect to authentication
-    console.log("Sign up data:", data);
+    setIsSubmitting(true);
     
-    // Simulate successful registration
-    toast.success("Account created successfully");
+    // Get existing users from localStorage or initialize empty array
+    const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
     
-    // Redirect to shop page after successful registration
+    // Check if email already exists
+    const emailExists = existingUsers.some((user: any) => user.email === data.email);
+    
+    if (emailExists) {
+      toast.error("Email already registered. Please use a different email.");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Add new user to the array
+    const newUser = {
+      name: data.name,
+      email: data.email,
+      password: data.password
+    };
+    
+    const updatedUsers = [...existingUsers, newUser];
+    
+    // Save updated users array to localStorage
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    
+    // Set user as authenticated
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("userEmail", data.email);
+    
+    toast.success("Account created successfully!");
+    
+    // Redirect to landing page after successful registration
     setTimeout(() => {
-      navigate("/shop");
+      navigate("/");
     }, 1500);
+    
+    setIsSubmitting(false);
   };
 
   return (
@@ -143,8 +172,12 @@ const SignUp = () => {
               )}
             />
             
-            <Button type="submit" className="w-full button-effect">
-              Create Account
+            <Button 
+              type="submit" 
+              className="w-full button-effect"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
         </Form>

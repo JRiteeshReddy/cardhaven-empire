@@ -46,8 +46,12 @@ const SignIn = () => {
     setTimeout(() => {
       console.log("Sign in attempt:", data);
       
-      // Check if user exists in our mock database
-      const user = MOCK_USERS.find(
+      // Get users from localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      const allUsers = [...MOCK_USERS, ...registeredUsers];
+      
+      // Check if user exists in our database
+      const user = allUsers.find(
         (user) => user.email === data.email && user.password === data.password
       );
       
