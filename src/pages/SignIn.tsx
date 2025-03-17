@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +21,15 @@ const formSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
 
+// Mock user database for demonstration purposes
+const MOCK_USERS = [
+  { email: "user@example.com", password: "password123" },
+  { email: "test@example.com", password: "test1234" },
+];
+
 const SignIn = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,16 +40,34 @@ const SignIn = () => {
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // In a real app, this would connect to authentication
-    console.log("Sign in attempt:", data);
+    setIsSubmitting(true);
     
-    // Simulate successful sign in
-    toast.success("Signed in successfully");
-    
-    // Redirect to shop page after successful sign in
+    // Simulate API call
     setTimeout(() => {
-      navigate("/shop");
-    }, 1500);
+      console.log("Sign in attempt:", data);
+      
+      // Check if user exists in our mock database
+      const user = MOCK_USERS.find(
+        (user) => user.email === data.email && user.password === data.password
+      );
+      
+      if (user) {
+        // Store authentication state in localStorage
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("userEmail", data.email);
+        
+        toast.success("Signed in successfully");
+        
+        // Redirect to landing page after successful sign in
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      } else {
+        toast.error("Invalid email or password");
+      }
+      
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
@@ -112,9 +137,20 @@ const SignIn = () => {
               </div>
             </div>
             
-            <Button type="submit" className="w-full button-effect">
-              Sign in
+            <Button 
+              type="submit" 
+              className="w-full button-effect"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
+            
+            {/* Demo credentials help text */}
+            <div className="text-center text-sm text-gray-500 mt-2">
+              <p>Demo credentials:</p>
+              <p>Email: user@example.com</p>
+              <p>Password: password123</p>
+            </div>
           </form>
         </Form>
         
